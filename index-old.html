@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Low-Code та n8n: Ваша нова суперсила</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .gradient-bg {
+            background: #0f0c29;
+            background: -webkit-linear-gradient(135deg, #24243e, #302b63, #0f0c29);
+            background: linear-gradient(135deg, #24243e, #302b63, #0f0c29);
+        }
+        .slide {
+            display: none;
+            min-height: 100vh;
+        }
+        .slide.active {
+            display: flex;
+        }
+        .node-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+        .node-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .nav-button {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .nav-left { left: 20px; }
+        .nav-right { right: 20px; }
+        .slide-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: white;
+            opacity: 0.6;
+            font-size: 14px;
+        }
+        .node-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin: 1rem auto;
+        }
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .qr-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .qr-item img {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        .qr-item p {
+            color: #1a1a2e;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active items-center justify-center">
+        <div class="w-full max-w-4xl px-20 text-center text-white">
+            <div class="mb-8">
+                <p class="text-lg font-light opacity-90 mb-2 tracking-wide">Вступ до автоматизації</p>
+            </div>
+            <h1 class="text-7xl font-bold mb-6 leading-tight">
+                <span class="block">Low-Code та</span>
+                <span class="block bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400">n8n:</span>
+            </h1>
+            <h2 class="text-3xl font-light opacity-95 mb-12">
+                Ваша нова суперсила <span class="font-normal">(без жодного рядка коду)</span>
+            </h2>
+            <div class="flex justify-center space-x-8 text-2xl opacity-70">
+                <i class="fas fa-robot"></i>
+                <i class="fas fa-cogs"></i>
+                <i class="fas fa-bolt"></i>
+                <i class="fas fa-magic"></i>
+                <i class="fas fa-rocket"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: What is n8n -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-6xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">Що таке n8n?</h2>
+            <div class="grid grid-cols-2 gap-8 mb-8">
+                <div class="node-card">
+                    <i class="fas fa-project-diagram text-5xl mb-4 text-purple-400"></i>
+                    <h3 class="text-2xl font-semibold mb-3">Візуальна автоматизація</h3>
+                    <p class="text-lg opacity-90">Створюйте складні workflow через drag-and-drop інтерфейс</p>
+                </div>
+                <div class="node-card">
+                    <i class="fas fa-plug text-5xl mb-4 text-blue-400"></i>
+                    <h3 class="text-2xl font-semibold mb-3">400+ інтеграцій</h3>
+                    <p class="text-lg opacity-90">Gmail, Slack, Google Sheets, Telegram, API та багато іншого</p>
+                </div>
+                <div class="node-card">
+                    <i class="fas fa-code text-5xl mb-4 text-green-400"></i>
+                    <h3 class="text-2xl font-semibold mb-3">Гнучкість коду</h3>
+                    <p class="text-lg opacity-90">Додавайте JavaScript коли потрібно більше контролю</p>
+                </div>
+                <div class="node-card">
+                    <i class="fas fa-server text-5xl mb-4 text-yellow-400"></i>
+                    <h3 class="text-2xl font-semibold mb-3">Self-hosted</h3>
+                    <p class="text-lg opacity-90">Повний контроль над вашими даними та процесами</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: HTTP Request Node -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
+                <i class="fas fa-network-wired mr-3"></i>HTTP Request Node
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/ui/node-settings.png" alt="HTTP Request Node" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-blue-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Виконує HTTP запити до будь-якого API</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-blue-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• GET, POST, PUT, DELETE запити</li>
+                            <li>• Аутентифікація (Bearer, OAuth, API Key)</li>
+                            <li>• Headers та параметри</li>
+                            <li>• JSON/XML обробка</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-blue-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">Отримання даних з CRM, відправка повідомлень в Telegram</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Webhook Node -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+                <i class="fas fa-bolt mr-3"></i>Webhook Node
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/integrations/builtin/core-nodes/webhook/webhook-node.png" alt="Webhook Node" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-purple-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Приймає дані від зовнішніх сервісів в реальному часі</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-purple-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• Унікальний URL для кожного workflow</li>
+                            <li>• Підтримка POST/GET методів</li>
+                            <li>• Обробка JSON, Form-data, XML</li>
+                            <li>• Аутентифікація запитів</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-purple-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">Прийом форм з сайту, інтеграція з платіжними системами</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Code Node -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400">
+                <i class="fas fa-code mr-3"></i>Code Node
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/integrations/builtin/core-nodes/code/code-node.png" alt="Code Node" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-green-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Виконує JavaScript код для обробки даних</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-green-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• Повний JavaScript (ES6+)</li>
+                            <li>• Доступ до вхідних даних</li>
+                            <li>• Бібліотеки: moment, lodash</li>
+                            <li>• Асинхронні операції</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-green-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">Трансформація даних, математичні обчислення, парсинг тексту</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: IF Node -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-400">
+                <i class="fas fa-code-branch mr-3"></i>IF Node
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/integrations/builtin/core-nodes/if/if-node.png" alt="IF Node" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-yellow-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Розгалужує workflow на основі умов</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-yellow-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• Порівняння значень (=, !=, >, <)</li>
+                            <li>• Перевірка на існування</li>
+                            <li>• Regex валідація</li>
+                            <li>• Множинні умови (AND/OR)</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-yellow-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">Фільтрація даних, маршрутизація повідомлень, валідація</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Schedule Trigger -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+                <i class="fas fa-clock mr-3"></i>Schedule Trigger
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/integrations/builtin/core-nodes/scheduletrigger/schedule-trigger-node.png" alt="Schedule Trigger" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-indigo-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Запускає workflow автоматично за розкладом</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-indigo-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• Інтервали (секунди, хвилини, години)</li>
+                            <li>• Cron вирази для складних розкладів</li>
+                            <li>• Конкретні дні та час</li>
+                            <li>• Timezone підтримка</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-indigo-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">Щоденні звіти, моніторинг, backup, розсилки</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Gmail Node -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-pink-400">
+                <i class="fas fa-envelope mr-3"></i>Gmail Node
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/integrations/builtin/app-nodes/gmail/gmail-node.png" alt="Gmail Node" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-red-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Автоматизація роботи з Gmail</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-red-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• Відправка та отримання листів</li>
+                            <li>• Робота з вкладеннями</li>
+                            <li>• Пошук та фільтрація</li>
+                            <li>• Labels та категорії</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-red-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">Автоматичні відповіді, збір даних з листів, розсилки</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Google Sheets Node -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-400">
+                <i class="fas fa-table mr-3"></i>Google Sheets Node
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/integrations/builtin/app-nodes/googlesheets/google-sheets-node.png" alt="Google Sheets Node" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-green-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Робота з Google Таблицями</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-green-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• Читання та запис даних</li>
+                            <li>• Оновлення рядків</li>
+                            <li>• Створення нових аркушів</li>
+                            <li>• Bulk операції</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-green-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">База даних, звіти, CRM, облік, дашборди</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Set Node -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-5xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
+                <i class="fas fa-edit mr-3"></i>Set Node
+            </h2>
+            <div class="grid grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="https://docs.n8n.io/_images/integrations/builtin/core-nodes/set/set-node.png" alt="Set Node" class="node-image"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-cyan-300">Призначення</h3>
+                        <p class="text-lg opacity-90">Створює та модифікує поля даних</p>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-cyan-300">Можливості</h3>
+                        <ul class="text-lg opacity-90 space-y-2">
+                            <li>• Додавання нових полів</li>
+                            <li>• Видалення полів</li>
+                            <li>• Перейменування</li>
+                            <li>• Використання виразів</li>
+                        </ul>
+                    </div>
+                    <div class="node-card">
+                        <h3 class="text-2xl font-semibold mb-2 text-cyan-300">Приклад використання</h3>
+                        <p class="text-lg opacity-90">Підготовка даних, форматування, cleanup</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: YouTube Resources -->
+    <div class="slide items-center justify-center">
+        <div class="w-full max-w-6xl px-20 text-white">
+            <h2 class="text-5xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-pink-400">
+                <i class="fab fa-youtube mr-3"></i>Корисні YouTube канали про n8n
+            </h2>
+            <p class="text-xl text-center mb-8 opacity-90">Відскануйте QR-код щоб підписатись</p>
+            <div class="qr-grid">
+                <div class="qr-item">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://youtube.com/@rogerroger-ai?si=6Es3xiXmAoJxdZwQ" alt="Roger Roger QR"/>
+                    <p>Roger Roger AI</p>
+                    <p class="text-sm opacity-70">Практичні приклади автоматизації</p>
+                </div>
+                <div class="qr-item">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://youtube.com/@kodarik?si=nfUbXaaP09DQAuok" alt="Kodarik QR"/>
+                    <p>Kodarik</p>
+                    <p class="text-sm opacity-70">Туторіали та кейси</p>
+                </div>
+                <div class="qr-item">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://youtube.com/@nateherk?si=s--1hVfNn-S3ZMvd" alt="Nate Herk QR"/>
+                    <p>Nate Herk</p>
+                    <p class="text-sm opacity-70">Глибокі dive в n8n</p>
+                </div>
+                <div class="qr-item">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://youtube.com/@creatormagicai?si=_WDcQcVUoYVJ4xy0" alt="Creator Magic AI QR"/>
+                    <p>Creator Magic AI</p>
+                    <p class="text-sm opacity-70">AI + автоматизація</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <button class="nav-button nav-left" onclick="changeSlide(-1)">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="nav-button nav-right" onclick="changeSlide(1)">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">11</span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+    </script>
+</body>
+</html>
